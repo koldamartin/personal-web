@@ -531,8 +531,9 @@ a:hover {
 }
 
 .ide-workspace {
-  display: grid;
-  grid-template-columns: 1fr 300px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   min-height: 520px;
   border-bottom: 1px solid var(--tui-border);
 }
@@ -540,7 +541,8 @@ a:hover {
 .ide-main-column {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--tui-border);
+  width: 100%;
+  border-right: none;
   overflow: hidden;
   background: #0f121d;
 }

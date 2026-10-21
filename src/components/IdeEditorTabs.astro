@@ -1,9 +1,9 @@
 ---
 const editorTabs = [
-  { id: "overview", file: "01_profile.py", icon: "🐍" },
-  { id: "ai", file: "02_ai_models.py", icon: "⚡" },
-  { id: "web", file: "03_websites.tsx", icon: "🌐" },
-  { id: "career", file: "04_career.log", icon: "📜" }
+  { id: "overview", file: "01_profile.py", label: "Profile & Stack", key: "1", icon: "🐍" },
+  { id: "ai", file: "02_ai_models.py", label: "ČEZ a.s. & Robosales", key: "2", icon: "⚡" },
+  { id: "web", file: "03_websites.tsx", label: "Websites (b2ts, vpt, doteku)", key: "3", icon: "🌐" },
+  { id: "career", file: "04_career.log", label: "Career Timeline", key: "4", icon: "📜" }
 ];
 ---
 
@@ -14,9 +14,16 @@ const editorTabs = [
       data-tab={tab.id}
       role="tab"
       aria-selected={idx === 0 ? "true" : "false"}
+      title={`Switch to ${tab.file} (Key: ${tab.key})`}
     >
+      <span class="key-shortcut" style="font-size: 0.68rem; padding: 0.05rem 0.3rem; background: rgba(255, 255, 255, 0.08); color: var(--tui-text-muted); border-radius: 2px;">
+        [{tab.key}]
+      </span>
       <span class="tab-icon">{tab.icon}</span>
-      <span>{tab.file}</span>
+      <span style="font-weight: 600;">{tab.file}</span>
+      <span style="font-size: 0.72rem; color: var(--tui-text-dim); margin-left: 0.2rem;">
+        ({tab.label})
+      </span>
       <span class="tab-close">✕</span>
     </div>
   ))}
