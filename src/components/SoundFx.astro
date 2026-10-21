@@ -1,0 +1,191 @@
+<script>
+  // Web Audio 8-bit Synthesizer for Retro Charm TUI Sound FX
+  class RetroAudioEngine {
+    private ctx: AudioContext | null = null;
+    public soundEnabled: boolean = true;
+
+    constructor() {
+      // Check localStorage preference
+      const saved = localStorage.getItem('tui-sound-enabled');
+      this.soundEnabled = saved !== null ? saved === 'true' : true;
+      this.updateUI();
+    }
+
+    private initCtx() {
+      if (!this.ctx) {
+        const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        if (AudioCtx) {
+          this.ctx = new AudioCtx();
+        }
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    }
+
+    public toggleSound() {
+      this.soundEnabled = !this.soundEnabled;
+      localStorage.setItem('tui-sound-enabled', String(this.soundEnabled));
+      this.updateUI();
+      if (this.soundEnabled) {
+        this.playPip(660, 0.08, 'square');
+      }
+    }
+
+    private updateUI() {
+      const el = document.getElementById('sound-status');
+      if (el) {
+        el.textContent = this.soundEnabled ? 'ON' : 'OFF';
+        el.style.color = this.soundEnabled ? 'var(--tui-green)' : 'var(--tui-text-dim)';
+      }
+    }
+
+    public playTabSound() {
+      if (!this.soundEnabled) return;
+      this.initCtx();
+      if (!this.ctx) return;
+
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.06);
+
+      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.06);
+    }
+
+    public playPip(freq = 520, duration = 0.04, type: OscillatorType = 'square') {
+      if (!this.soundEnabled) return;
+      this.initCtx();
+      if (!this.ctx) return;
+
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+      gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + duration);
+    }
+  }
+
+  const audio = new RetroAudioEngine();
+
+  // CRT Scanline Logic
+  let crtActive = false;
+  const savedCrt = localStorage.getItem('tui-crt-active');
+  if (savedCrt === 'true') {
+    crtActive = true;
+    document.body.classList.add('crt-active');
+  }
+  updateCrtUI();
+
+  function toggleCRT() {
+    crtActive = !crtActive;
+    if (crtActive) {
+      document.body.classList.add('crt-active');
+    } else {
+      document.body.classList.remove('crt-active');
+    }
+    localStorage.setItem('tui-crt-active', String(crtActive));
+    updateCrtUI();
+    audio.playPip(800, 0.05, 'sawtooth');
+  }
+
+  function updateCrtUI() {
+    const el = document.getElementById('crt-status');
+    if (el) {
+      el.textContent = crtActive ? 'ON' : 'OFF';
+      el.style.color = crtActive ? 'var(--tui-pink)' : 'var(--tui-text-dim)';
+    }
+  }
+
+  document.getElementById('toggle-sound-btn')?.addEventListener('click', () => {
+    audio.toggleSound();
+  });
+
+  document.getElementById('toggle-crt-btn')?.addEventListener('click', () => {
+    toggleCRT();
+  });
+
+  // Tab Switching Logic
+  const tabs = document.querySelectorAll('.tui-tab');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  function activateTab(tabId: string) {
+    let found = false;
+    tabs.forEach((t) => {
+      const match = (t as HTMLElement).dataset.tab === tabId;
+      t.classList.toggle('active', match);
+      t.setAttribute('aria-selected', match ? 'true' : 'false');
+      if (match) found = true;
+    });
+
+    tabContents.forEach((c) => {
+      const match = c.id === `tab-${tabId}`;
+      c.classList.toggle('active', match);
+    });
+
+    if (found) {
+      audio.playTabSound();
+    }
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const id = (tab as HTMLElement).dataset.tab;
+      if (id) activateTab(id);
+    });
+  });
+
+  // Switch tab triggers inside page content
+  document.querySelectorAll('.switch-tab-trigger').forEach((trigger) => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = (trigger as HTMLElement).dataset.target;
+      if (target) {
+        activateTab(target);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Global Keyboard Shortcuts
+  window.addEventListener('keydown', (e) => {
+    // If typing in an input field, do not hijack number keys
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    const key = e.key.toUpperCase();
+    if (key === '1') activateTab('overview');
+    else if (key === '2') activateTab('ai');
+    else if (key === '3') activateTab('web');
+    else if (key === '4') activateTab('career');
+    else if (key === '5') {
+      activateTab('cli');
+      setTimeout(() => {
+        document.getElementById('terminal-input')?.focus();
+      }, 50);
+    } else if (key === 'T') {
+      toggleCRT();
+    } else if (key === 'S') {
+      audio.toggleSound();
+    }
+  });
+</script>

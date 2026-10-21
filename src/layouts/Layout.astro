@@ -1,0 +1,60 @@
+---
+import '../styles/tui.css';
+import HeaderTui from '../components/HeaderTui.astro';
+import NavigationTabs from '../components/NavigationTabs.astro';
+import FooterStatusBar from '../components/FooterStatusBar.astro';
+import SoundFx from '../components/SoundFx.astro';
+import { PERSONAL_INFO } from '../data/portfolio';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = "Martin Kolda | Python AI & Web Developer [TUI / Charm]",
+  description = "Portfolio of Martin Kolda – Python AI Engineer building AI solutions for ČEZ a.s., creator of robosales.ai assistant, and developer of high-speed Astro websites (b2ts.cz, vpt-lipno.cz, doteku.cz)."
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={PERSONAL_INFO.name} />
+
+    <!-- OpenGraph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/images/avatar-8bit.png" />
+
+    <!-- Google Fonts Preconnect for JetBrains Mono & Press Start 2P -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body>
+    <!-- Toggleable CRT Scanlines Overlay -->
+    <div class="crt-overlay" aria-hidden="true"></div>
+
+    <!-- Main Charm TUI Window Container -->
+    <main class="tui-window">
+      <HeaderTui />
+      <NavigationTabs />
+      
+      <div class="tui-body">
+        <slot />
+      </div>
+
+      <FooterStatusBar />
+    </main>
+
+    <SoundFx />
+  </body>
+</html>

@@ -1,0 +1,149 @@
+---
+import { PERSONAL_INFO, SKILLS_MATRIX, AI_PROJECTS, WEB_PROJECTS } from '../data/portfolio';
+---
+
+<div id="tab-overview" class="tab-content active" role="tabpanel">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+    <!-- Profile & Bio Box -->
+    <div class="charm-box pink-glow" style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <div style="display: flex; gap: 1.25rem; align-items: flex-start; flex-wrap: wrap;">
+        <!-- 8-Bit Pixel Art Avatar (LCP High Priority) -->
+        <div style="flex-shrink: 0;">
+          <img 
+            src="/images/avatar-8bit.svg" 
+            alt="Martin Kolda - 8-bit Pixel Avatar" 
+            width="150" 
+            height="150" 
+            fetchpriority="high"
+            class="pixel-art-img"
+          />
+          <div style="margin-top: 0.5rem; text-align: center; font-size: 0.7rem; color: var(--tui-pink); font-weight: 700;">
+            [ DEV_ID: MK-AI ]
+          </div>
+        </div>
+
+        <div style="flex: 1; min-width: 200px;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+            <h1 style="font-size: 1.5rem; color: var(--tui-text);">{PERSONAL_INFO.name}</h1>
+          </div>
+          <div style="color: var(--tui-cyan); font-weight: 600; font-size: 0.95rem; margin-bottom: 0.75rem;">
+            {PERSONAL_INFO.title}
+          </div>
+          <p style="color: var(--tui-text-muted); font-size: 0.88rem; line-height: 1.55; margin-bottom: 0.75rem;">
+            {PERSONAL_INFO.summary}
+          </p>
+          <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem;">
+            <span style="color: var(--tui-green); font-weight: 700;">● STATUS:</span>
+            <span style="color: var(--tui-text);">{PERSONAL_INFO.status}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Highlights Card -->
+      <div style="background: #0f121d; border: 1px solid var(--tui-border); padding: 0.85rem 1rem; font-size: 0.82rem;">
+        <div style="color: var(--tui-yellow); font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem;">
+          <span>⚡ CURRENT ENTERPRISE FOCUS:</span>
+        </div>
+        <div style="color: var(--tui-text); line-height: 1.5;">
+          {PERSONAL_INFO.currentFocus}
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: auto;">
+        <a href="#tab-ai" class="tui-btn switch-tab-trigger" data-target="ai">
+          <span>⚡ View AI Work (ČEZ / Robosales)</span>
+        </a>
+        <a href="#tab-web" class="tui-btn cyan switch-tab-trigger" data-target="web">
+          <span>🌐 View Web Showcase (3 Sites)</span>
+        </a>
+        <a href={`mailto:${PERSONAL_INFO.email}`} class="tui-btn green">
+          <span>✉ Send Message</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Stats & Hardware Specs Box -->
+    <div class="charm-box cyan-glow" style="display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div class="tui-section-title" style="margin-bottom: 1rem;">
+          SYSTEM SPECS & CORE COMPETENCIES
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.85rem;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--tui-border); padding-bottom: 0.35rem;">
+            <span style="color: var(--tui-text-muted);">PRIMARY LANGUAGE</span>
+            <span style="color: var(--tui-yellow); font-weight: 700;">Python 3.12+ (Async, Typing, RAG)</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--tui-border); padding-bottom: 0.35rem;">
+            <span style="color: var(--tui-text-muted);">AI FRAMEWORKS</span>
+            <span style="color: var(--tui-pink); font-weight: 700;">LangChain, LlamaIndex, LLMs</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--tui-border); padding-bottom: 0.35rem;">
+            <span style="color: var(--tui-text-muted);">WEB FRAMEWORKS</span>
+            <span style="color: var(--tui-cyan); font-weight: 700;">Astro, Next.js, TypeScript</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--tui-border); padding-bottom: 0.35rem;">
+            <span style="color: var(--tui-text-muted);">DATA & VECTOR STORAGE</span>
+            <span style="color: var(--tui-green); font-weight: 700;">PostgreSQL, pgvector, AWS S3</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--tui-border); padding-bottom: 0.35rem;">
+            <span style="color: var(--tui-text-muted);">KEY CLIENT</span>
+            <span style="color: var(--tui-purple); font-weight: 700;">ČEZ a.s. (Energy Utility AI)</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--tui-border); padding-bottom: 0.35rem;">
+            <span style="color: var(--tui-text-muted);">LIVE CLIENT SITES</span>
+            <span style="color: var(--tui-cyan); font-weight: 700;">b2ts.cz, vpt-lipno.cz, doteku.cz</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charm Command Hint Box -->
+      <div style="margin-top: 1.25rem; background: #0c0e15; border: 1px solid var(--tui-border); padding: 0.75rem 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+          <span style="color: var(--tui-pink); font-weight: 700;">PRO-TIP / HOTKEYS:</span>
+          <span style="color: var(--tui-text-dim);">TUI SHORTCUTS</span>
+        </div>
+        <div style="color: var(--tui-text-muted); font-size: 0.78rem; margin-top: 0.35rem; line-height: 1.4;">
+          Press <kbd style="background: #1f2330; padding: 0.1rem 0.3rem; border: 1px solid var(--tui-border); color: var(--tui-cyan);">1</kbd>-<kbd style="background: #1f2330; padding: 0.1rem 0.3rem; border: 1px solid var(--tui-border); color: var(--tui-cyan);">5</kbd> to jump tabs, <kbd style="background: #1f2330; padding: 0.1rem 0.3rem; border: 1px solid var(--tui-border); color: var(--tui-pink);">T</kbd> for CRT filter, <kbd style="background: #1f2330; padding: 0.1rem 0.3rem; border: 1px solid var(--tui-border); color: var(--tui-yellow);">S</kbd> to toggle SFX.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Technical Proficiency Matrix (ASCII Gauge Bars) -->
+  <div class="charm-box green-glow">
+    <div class="tui-section-title">
+      TECHNICAL PROFICIENCY METERS
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+      {SKILLS_MATRIX.map((group) => {
+        const fullBlocks = Math.round(group.level / 10);
+        const emptyBlocks = 10 - fullBlocks;
+        const meter = "█".repeat(fullBlocks) + "░".repeat(emptyBlocks);
+        return (
+          <div style="background: #0f121d; border: 1px solid var(--tui-border); padding: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; color: var(--tui-text); font-size: 0.85rem;">{group.category}</span>
+              <span style="color: var(--tui-green); font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700;">
+                [{meter}] {group.level}%
+              </span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.5rem;">
+              {group.skills.map((skill) => (
+                <span style="font-size: 0.72rem; background: #1a1e2c; color: var(--tui-cyan); padding: 0.15rem 0.45rem; border: 1px solid rgba(0, 245, 212, 0.2);">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</div>

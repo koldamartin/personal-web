@@ -1,0 +1,57 @@
+---
+import { PERSONAL_INFO } from '../data/portfolio';
+---
+
+<header class="tui-header">
+  <div class="tui-titlebar">
+    <div class="tui-window-controls">
+      <span class="tui-dot red" title="Close"></span>
+      <span class="tui-dot yellow" title="Minimize"></span>
+      <span class="tui-dot green" title="Maximize"></span>
+      <span style="color: var(--tui-text-dim); margin-left: 0.5rem; font-size: 0.75rem;">kolda-os v2.4-charm</span>
+    </div>
+    <div class="tui-title">
+      <span>martin@workstation:</span>
+      <span class="highlight">~/portfolio.py</span>
+    </div>
+    <div class="tui-title-actions">
+      <button id="toggle-crt-btn" class="tui-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" title="Toggle CRT Scanline Effect (Shortcut: T)">
+        <span>[ CRT: <span id="crt-status">OFF</span> ]</span>
+      </button>
+      <button id="toggle-sound-btn" class="tui-btn" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;" title="Toggle 8-bit Audio SFX (Shortcut: S)">
+        <span>[ SFX: <span id="sound-status">ON</span> ]</span>
+      </button>
+    </div>
+  </div>
+
+  <div style="padding: 1.25rem 1.75rem 0.75rem; border-bottom: 1px solid var(--tui-border); background: #0f121d;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <pre class="ascii-banner">
+███╗   ███╗ █████╗ ██████╗ ████████╗██╗███╗   ██╗    ██╗  ██╗ ██████╗ ██╗     ██████╗  █████╗ 
+████╗ ████║██╔══██╗██╔══██╗╚══██╔══╝██║████╗  ██║    ██║ ██╔╝██╔═══██╗██║     ██╔══██╗██╔══██╗
+██╔████╔██║███████║██████╔╝   ██║   ██║██╔██╗ ██║    █████╔╝ ██║   ██║██║     ██║  ██║███████║
+██║╚██╔╝██║██╔══██║██╔══██╗   ██║   ██║██║╚██╗██║    ██╔═██╗ ██║   ██║██║     ██║  ██║██╔══██║
+██║ ╚═╝ ██║██║  ██║██║  ██║   ██║   ██║██║ ╚████║    ██║  ██╗╚██████╔╝███████╗██████╔╝██║  ██║
+╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚═╝  ╚═══╝    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝
+        </pre>
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.25rem;">
+          <span class="charm-badge magenta">PYTHON AI ENGINEER</span>
+          <span class="charm-badge cyan">FULL-STACK WEB DEV</span>
+          <span class="charm-badge green">ČEZ A.S. AI SOLUTIONS</span>
+          <span class="charm-badge yellow">ROBOSALES.AI</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem; font-size: 0.75rem; color: var(--tui-text-muted);">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #50fa7b; box-shadow: 0 0 8px #50fa7b;"></span>
+          <span style="color: #50fa7b; font-weight: 700;">SYSTEM OPERATIONAL</span>
+        </div>
+        <div><span>NODE:</span> <span style="color: var(--tui-cyan);">v24.21.0</span> | <span>ASTRO:</span> <span style="color: var(--tui-pink);">v7.4.1</span></div>
+        <div><span>LOCATION:</span> <span style="color: var(--tui-text);">{PERSONAL_INFO.location}</span></div>
+        <div><span>CONTACT:</span> <a href={`mailto:${PERSONAL_INFO.email}`} style="color: var(--tui-yellow);">{PERSONAL_INFO.email}</a></div>
+      </div>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,130 @@
+---
+import { AI_PROJECTS } from '../data/portfolio';
+---
+
+<div id="tab-ai" class="tab-content" role="tabpanel">
+  <div class="tui-section-title">
+    ARTIFICIAL INTELLIGENCE & MACHINE LEARNING ARCHITECTURES
+  </div>
+  <p style="color: var(--tui-text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; max-width: 900px;">
+    Hands-on engineering across enterprise energy optimization, conversational e-commerce agents, and large-scale RAG retrieval systems.
+  </p>
+
+  <div style="display: flex; flex-direction: column; gap: 2rem;">
+    {AI_PROJECTS.map((project) => (
+      <div class={`charm-box ${project.badgeColor}-glow`} style="padding: 1.5rem;">
+        <div style="display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap;">
+          <!-- 8-Bit Pixel Illustration -->
+          <div style="flex-shrink: 0;">
+            <img 
+              src={project.image} 
+              alt={`${project.title} - 8-bit Illustration`} 
+              width="170" 
+              height="170" 
+              loading="lazy"
+              class="pixel-art-img"
+            />
+            <div style="margin-top: 0.5rem; text-align: center;">
+              <span class={`charm-badge ${project.badgeColor}`}>{project.badge}</span>
+            </div>
+          </div>
+
+          <!-- Project Details -->
+          <div style="flex: 1; min-width: 280px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <div>
+                <h2 style="font-size: 1.35rem; color: var(--tui-text); margin-bottom: 0.2rem;">{project.title}</h2>
+                <div style="font-size: 0.85rem; color: var(--tui-yellow); font-weight: 600;">
+                  CLIENT: <span style="color: var(--tui-text);">{project.client}</span> · ROLE: <span style="color: var(--tui-cyan);">{project.role}</span>
+                </div>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--tui-text-dim); background: #0c0e15; padding: 0.2rem 0.5rem; border: 1px solid var(--tui-border);">
+                {project.period}
+              </div>
+            </div>
+
+            <p style="color: var(--tui-pink); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem;">
+              "{project.tagline}"
+            </p>
+
+            <p style="color: var(--tui-text-muted); font-size: 0.86rem; line-height: 1.6; margin-bottom: 1rem;">
+              {project.description}
+            </p>
+
+            <!-- Key Engineering Highlights -->
+            <div style="background: #0f121d; border: 1px solid var(--tui-border); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: var(--tui-green); margin-bottom: 0.5rem;">
+                KEY ENGINEERING DELIVERABLES:
+              </div>
+              <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.82rem; color: var(--tui-text);">
+                {project.highlights.map((h) => (
+                  <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                    <span style="color: var(--tui-cyan); flex-shrink: 0;">├──</span>
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <!-- Tech Stack Badges -->
+            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;">
+              <span style="font-size: 0.75rem; color: var(--tui-text-dim); margin-right: 0.25rem;">STACK:</span>
+              {project.stack.map((tech) => (
+                <span style="font-size: 0.72rem; background: #1a1e2c; color: var(--tui-text); padding: 0.15rem 0.45rem; border: 1px solid var(--tui-border);">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+
+    <!-- Interactive Architecture Diagram Box -->
+    <div class="charm-box cyan-glow">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <span style="font-weight: 700; color: var(--tui-cyan); font-size: 0.9rem;">
+          SYSTEM ARCHITECTURE SCHEMATIC: ENTERPRISE RAG & LLM PIPELINE
+        </span>
+        <span class="charm-badge outline-cyan">ASCII HIGH-LEVEL SPEC</span>
+      </div>
+      <pre class="tui-code" style="font-size: 0.75rem; line-height: 1.35; overflow-x: auto;">
+┌─────────────────────────────────┐       ┌────────────────────────────────┐
+│ Enterprise Ingestion & Documents │       │ User Query / Conversational UI │
+└────────────────┬────────────────┘       └───────────────┬────────────────┘
+                 │                                        │
+                 ▼                                        ▼
+   ┌───────────────────────────┐           ┌─────────────────────────────┐
+   │ Chunking & LangChain Parser │         │ Intent Classifier (FastAPI) │
+   └─────────────┬─────────────┘           └──────────────┬──────────────┘
+                 │                                        │
+                 ▼                                        ▼
+   ┌───────────────────────────┐           ┌─────────────────────────────┐
+   │ Dense / Sparse Embeddings │           │ Hybrid Semantic Search      │
+   └─────────────┬─────────────┘           └──────────────┬──────────────┘
+                 │                                        │
+                 ├──────────────────┬─────────────────────┤
+                 ▼                  ▼                     ▼
+     ┌───────────────────────┐ ┌───────────────┐ ┌──────────────────────┐
+     │ PostgreSQL / pgvector │ │ Vector DB     │ │ AWS S3 Raw Data Store│
+     └───────────────────────┘ └───────┬───────┘ └──────────────────────┘
+                                       │
+                                       ▼
+                         ┌───────────────────────────┐
+                         │ Context Injection & Rerank│
+                         └─────────────┬─────────────┘
+                                       │
+                                       ▼
+                         ┌───────────────────────────┐
+                         │ Enterprise LLM Inference  │
+                         │ (ČEZ a.s. / Robosales AI) │
+                         └─────────────┬─────────────┘
+                                       │
+                                       ▼
+                         ┌───────────────────────────┐
+                         │ Verified Output Streaming │
+                         └───────────────────────────┘
+      </pre>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,134 @@
+---
+import { WEB_PROJECTS } from '../data/portfolio';
+---
+
+<div id="tab-web" class="tab-content" role="tabpanel">
+  <div class="tui-section-title">
+    PRODUCTION WEBSITES & CLIENT DIGITAL PLATFORMS
+  </div>
+  <p style="color: var(--tui-text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; max-width: 900px;">
+    Crafted with Astro, Next.js, and TypeScript. Engineered for near-instant load times, flawless mobile responsiveness, and zero-headache lead collection.
+  </p>
+
+  <!-- Hero Header Showcase Box -->
+  <div class="charm-box cyan-glow" style="margin-bottom: 1.75rem; padding: 1.5rem;">
+    <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+      <div style="flex-shrink: 0;">
+        <img 
+          src="/images/websites-8bit.svg" 
+          alt="Vintage CRT Workstation - Web Engineering" 
+          width="150" 
+          height="150" 
+          loading="lazy"
+          class="pixel-art-img"
+        />
+        <div style="margin-top: 0.5rem; text-align: center; font-size: 0.72rem; color: var(--tui-cyan); font-weight: 700;">
+          [ FULLSTACK ENGINE ]
+        </div>
+      </div>
+      <div style="flex: 1; min-width: 260px;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+          <span class="charm-badge cyan">CLIENT CASE STUDIES</span>
+          <span class="charm-badge outline-green">100/100 CORE WEB VITALS</span>
+        </div>
+        <h3 style="font-size: 1.2rem; color: var(--tui-text); margin-bottom: 0.4rem;">
+          Modern Static & Hybrid Web Architecture
+        </h3>
+        <p style="color: var(--tui-text-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 0.75rem;">
+          Combining static generation (SSG) in Astro with lightweight client islands, TypeScript safety, and Netlify Forms for dependable inquiry collection without server maintenance.
+        </p>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <span class="charm-badge outline-cyan">Astro Framework</span>
+          <span class="charm-badge outline-pink">Next.js</span>
+          <span class="charm-badge outline-green">TypeScript</span>
+          <span class="charm-badge outline-cyan">Netlify Forms</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 Client Websites Grid -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    {WEB_PROJECTS.map((site) => (
+      <div class={`charm-box ${site.badgeColor}-glow`} style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <!-- Header Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px dashed var(--tui-border); padding-bottom: 0.5rem;">
+            <span class={`charm-badge ${site.badgeColor}`}>{site.status}</span>
+            <span style="font-size: 0.75rem; color: var(--tui-text-dim);">{site.category}</span>
+          </div>
+
+          <!-- Title & Domain -->
+          <h3 style="font-size: 1.15rem; color: var(--tui-text); margin-bottom: 0.25rem;">
+            {site.title}
+          </h3>
+          <div style="margin-bottom: 0.75rem;">
+            <a 
+              href={site.url} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: var(--tui-cyan); display: inline-flex; align-items: center; gap: 0.35rem;"
+            >
+              <span>{site.domain}</span>
+              <span style="font-size: 0.8rem;">↗</span>
+            </a>
+          </div>
+
+          <p style="color: var(--tui-text-muted); font-size: 0.84rem; line-height: 1.5; margin-bottom: 1rem;">
+            {site.description}
+          </p>
+
+          <!-- Key Features -->
+          <div style="background: #0f121d; border: 1px solid var(--tui-border); padding: 0.75rem; margin-bottom: 1rem;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: var(--tui-yellow); margin-bottom: 0.4rem;">
+              FEATURES & IMPLEMENTATION:
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.8rem; color: var(--tui-text);">
+              {site.features.map((f) => (
+                <li style="display: flex; align-items: flex-start; gap: 0.4rem;">
+                  <span style="color: var(--tui-green); flex-shrink: 0;">✔</span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <!-- Tech Stack -->
+          <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem;">
+            {site.stack.map((st) => (
+              <span style="font-size: 0.7rem; background: #1a1e2c; color: var(--tui-text-muted); padding: 0.15rem 0.4rem; border: 1px solid var(--tui-border);">
+                {st}
+              </span>
+            ))}
+          </div>
+
+          <!-- Direct Link CTA -->
+          <a 
+            href={site.url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="tui-btn" 
+            style="width: 100%; justify-content: center;"
+          >
+            <span>Visit {site.domain} ↗</span>
+          </a>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Web & AI Consulting CTA Banner -->
+  <div class="charm-box pink-glow" style="background: #141726; text-align: center; padding: 2rem 1.5rem;">
+    <h3 style="font-size: 1.3rem; color: var(--tui-pink); margin-bottom: 0.5rem;">
+      Need a High-Speed Website or AI Integration for Your Business?
+    </h3>
+    <p style="color: var(--tui-text-muted); font-size: 0.88rem; max-width: 650px; margin: 0 auto 1.25rem;">
+      Whether you require an automated AI agent, enterprise RAG pipeline, or an ultra-fast Astro website with zero lag, let's talk.
+    </p>
+    <a href="mailto:mkko@seznam.cz" class="tui-btn" style="background: var(--tui-pink); color: #0c0e15; font-size: 0.9rem; padding: 0.6rem 1.4rem;">
+      <span>✉ Contact Martin Kolda (mkko@seznam.cz)</span>
+    </a>
+  </div>
+</div>

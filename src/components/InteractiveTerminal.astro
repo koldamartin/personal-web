@@ -1,0 +1,262 @@
+---
+import { PERSONAL_INFO } from '../data/portfolio';
+---
+
+<div id="tab-cli" class="tab-content" role="tabpanel">
+  <div class="tui-section-title">
+    INTERACTIVE TUI CONSOLE & COMMAND RUNNER
+  </div>
+  <p style="color: var(--tui-text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+    Experience the true Charm terminal environment. Type commands below or click the quick-launch tags.
+  </p>
+
+  <!-- Quick Command Chips -->
+  <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem;">
+    <span style="font-size: 0.75rem; color: var(--tui-text-dim); align-self: center;">QUICK COMMANDS:</span>
+    <button class="tui-btn cli-chip" data-cmd="help">help</button>
+    <button class="tui-btn cli-chip cyan" data-cmd="ai">ai</button>
+    <button class="tui-btn cli-chip green" data-cmd="websites">websites</button>
+    <button class="tui-btn cli-chip" data-cmd="skills">skills</button>
+    <button class="tui-btn cli-chip" data-cmd="cat resume">cat resume</button>
+    <button class="tui-btn cli-chip" data-cmd="contact">contact</button>
+    <button class="tui-btn cli-chip" data-cmd="matrix">matrix</button>
+    <button class="tui-btn cli-chip" data-cmd="clear">clear</button>
+  </div>
+
+  <div class="terminal-container">
+    <div id="terminal-history" class="terminal-history" role="log" aria-live="polite">
+      <div class="terminal-line" style="color: var(--tui-pink); font-weight: 700;">
+        Welcome to Martin Kolda's TUI Shell (v2.4.1) [Charm / Bubbletea Emulation]
+      </div>
+      <div class="terminal-line" style="color: var(--tui-text-muted);">
+        Type <span style="color: var(--tui-cyan); font-weight: 700;">help</span> to see all available commands, or click any command tag above.
+      </div>
+      <div class="terminal-line" style="color: var(--tui-text-dim);">
+        Current active node: ČEZ a.s. AI Architect & Freelance Web Studio
+      </div>
+      <div class="terminal-line" style="margin-bottom: 0.5rem;"></div>
+    </div>
+
+    <form id="terminal-form" class="terminal-input-row" autocomplete="off">
+      <label for="terminal-input" class="terminal-prompt">martin@kolda:~$ </label>
+      <input 
+        id="terminal-input" 
+        type="text" 
+        class="terminal-input" 
+        placeholder="Type a command (e.g. 'ai', 'websites', 'help')..." 
+        spellcheck="false"
+        autocomplete="off"
+      />
+      <button type="submit" class="tui-btn" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">RUN</button>
+    </form>
+  </div>
+
+  <!-- Matrix Easter Egg Canvas (Hidden by default) -->
+  <div id="matrix-container" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 10000; flex-direction: column; align-items: center; justify-content: center;">
+    <canvas id="matrix-canvas" style="position: absolute; inset: 0; width: 100%; height: 100%;"></canvas>
+    <div style="position: relative; z-index: 2; background: #0c0e15; border: 2px solid var(--tui-green); padding: 1.5rem 2rem; text-align: center; max-width: 450px;">
+      <h3 style="color: var(--tui-green); font-family: var(--font-pixel); font-size: 0.9rem; margin-bottom: 1rem;">
+        [ MATRIX SIMULATION ]
+      </h3>
+      <p style="color: var(--tui-text); font-size: 0.85rem; margin-bottom: 1.25rem;">
+        Neural data flow active. ČEZ a.s. & Robosales pipelines interconnected.
+      </p>
+      <button id="close-matrix-btn" class="tui-btn green" style="font-size: 0.8rem;">
+        <span>DISENGAGE (ESC)</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Terminal Logic
+  const form = document.getElementById('terminal-form') as HTMLFormElement | null;
+  const input = document.getElementById('terminal-input') as HTMLInputElement | null;
+  const history = document.getElementById('terminal-history');
+  const chips = document.querySelectorAll('.cli-chip');
+
+  const COMMANDS: Record<string, string> = {
+    help: `
+<span style="color: var(--tui-yellow); font-weight: 700;">AVAILABLE COMMANDS:</span>
+  <span style="color: var(--tui-cyan);">ai</span>         - Details of ČEZ a.s., Robosales.ai & AddAI.Life engineering
+  <span style="color: var(--tui-cyan);">websites</span>   - List of published sites (b2ts.cz, vpt-lipno.cz, doteku.cz)
+  <span style="color: var(--tui-cyan);">skills</span>     - Technical competencies & language proficiency
+  <span style="color: var(--tui-cyan);">whoami</span>     - Brief biographical background
+  <span style="color: var(--tui-cyan);">cat resume</span> - Text resume printout
+  <span style="color: var(--tui-cyan);">contact</span>    - Email and collaboration channels
+  <span style="color: var(--tui-cyan);">matrix</span>     - Run Matrix phosphor rain animation
+  <span style="color: var(--tui-cyan);">sound</span>      - Toggle 8-bit sound effects
+  <span style="color: var(--tui-cyan);">crt</span>        - Toggle CRT scanline shader
+  <span style="color: var(--tui-cyan);">clear</span>      - Clear terminal screen
+`,
+    whoami: `
+<span style="color: var(--tui-pink); font-weight: 700;">Martin Kolda</span> - Python AI & Full-Stack Web Developer.
+Based in Czech Republic. Currently building enterprise AI solutions for ČEZ a.s.
+and delivering production websites for commercial clients.
+`,
+    ai: `
+<span style="color: var(--tui-green); font-weight: 700;">[ AI & MACHINE LEARNING PROJECTS ]</span>
+1. <span style="color: var(--tui-yellow);">ČEZ a.s.</span>: Enterprise AI Solutions (2025–Present)
+   - Specialized LLM reasoning pipelines, knowledge retrieval, industrial process AI.
+2. <span style="color: var(--tui-yellow);">robosales.ai</span>: AI Shopping Assistant (Contractor)
+   - Conversational commerce agent, intent extraction, automated recommendation.
+3. <span style="color: var(--tui-yellow);">AddAI.Life</span>: LangChain RAG & Data Platform (2024–2025)
+   - RAG search component in LangChain, multi-tenant CRUD on S3/Postgres/VectorDB.
+`,
+    websites: `
+<span style="color: var(--tui-cyan); font-weight: 700;">[ PRODUCTION WEBSITES ]</span>
+1. <a href="https://b2ts.cz" target="_blank" style="color: var(--tui-cyan); font-weight: 700;">b2ts.cz</a> - Business & Tech Solutions corporate presentation
+2. <a href="https://vpt-lipno.cz" target="_blank" style="color: var(--tui-yellow); font-weight: 700;">vpt-lipno.cz</a> - Lake Lipno accommodation & tourist portal
+3. <a href="https://doteku.cz" target="_blank" style="color: var(--tui-pink); font-weight: 700;">doteku.cz</a> - Wellness & massage sanctuary booking presence
+`,
+    skills: `
+<span style="color: var(--tui-purple); font-weight: 700;">[ TECH STACK ]</span>
+* AI / LLMs:  LangChain, LlamaIndex, pgvector, VectorDBs, Prompt Engineering, RAG
+* Python:     Python 3.12+, FastAPI, Celery, PyTest, AsyncIO, SQLAlchemy
+* Frontend:   Astro, TypeScript, Next.js, Netlify Forms, Responsive CSS
+* Data/Cloud: PostgreSQL, AWS S3, Docker, Redis, REST APIs
+`,
+    "cat resume": `
+<span style="color: var(--tui-yellow); font-weight: 700;">====================================</span>
+<span style="color: var(--tui-pink); font-weight: 700;">MARTIN KOLDA - CURRICULUM VITAE</span>
+<span style="color: var(--tui-yellow); font-weight: 700;">====================================</span>
+Email: mkko@seznam.cz | Location: Czech Republic
+
+[EXPERIENCE]
+* AI Developer (Živnostník) | 02/2025 – Present
+  Client: ČEZ a.s. | Enterprise generative AI & autonomous systems
+* Web Developer (Na volné noze) | 12/2024 – Present
+  Live sites: b2ts.cz, vpt-lipno.cz, doteku.cz
+* AI/Python Developer (AddAI.Life) | 03/2024 – 02/2025
+  LangChain RAG engine, S3 / PostgreSQL / VectorDB data platform
+* Contractor | robosales.ai
+  AI Shopping Assistant conversational commerce form
+`,
+    contact: `
+<span style="color: var(--tui-green); font-weight: 700;">GET IN TOUCH:</span>
+Email: <a href="mailto:mkko@seznam.cz" style="color: var(--tui-yellow); font-weight: 700;">mkko@seznam.cz</a>
+Availability: Available for AI engineering consulting and high-performance Astro/Next.js web projects.
+`
+  };
+
+  function addLine(content: string) {
+    if (!history) return;
+    const div = document.createElement('div');
+    div.className = 'terminal-line';
+    div.innerHTML = content;
+    history.appendChild(div);
+    history.scrollTop = history.scrollHeight;
+  }
+
+  function handleCommand(rawCmd: string) {
+    const cmd = rawCmd.trim().toLowerCase();
+    addLine(`<span style="color: var(--tui-pink); font-weight: 700;">martin@kolda:~$</span> <span style="color: var(--tui-text);">${rawCmd}</span>`);
+    
+    if (!cmd) return;
+
+    if (cmd === 'clear') {
+      if (history) history.innerHTML = '';
+      return;
+    }
+
+    if (cmd === 'sound') {
+      const btn = document.getElementById('toggle-sound-btn');
+      if (btn) btn.click();
+      return;
+    }
+
+    if (cmd === 'crt') {
+      const btn = document.getElementById('toggle-crt-btn');
+      if (btn) btn.click();
+      return;
+    }
+
+    if (cmd === 'matrix') {
+      startMatrix();
+      addLine('<span style="color: var(--tui-green);">Matrix simulation initiated. Press ESC to disengage.</span>');
+      return;
+    }
+
+    if (COMMANDS[cmd]) {
+      addLine(COMMANDS[cmd]);
+    } else {
+      addLine(`<span style="color: #ff5f87;">Command not recognized: '${cmd}'. Type <span style="color: var(--tui-cyan); font-weight: 700;">help</span> for available commands.</span>`);
+    }
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!input) return;
+    const val = input.value;
+    input.value = '';
+    handleCommand(val);
+  });
+
+  chips.forEach((c) => {
+    c.addEventListener('click', () => {
+      const cmd = (c as HTMLElement).dataset.cmd;
+      if (cmd) {
+        handleCommand(cmd);
+      }
+    });
+  });
+
+  // Matrix Rain Simulation
+  const matrixContainer = document.getElementById('matrix-container');
+  const matrixCanvas = document.getElementById('matrix-canvas') as HTMLCanvasElement | null;
+  const closeMatrixBtn = document.getElementById('close-matrix-btn');
+  let matrixInterval: number | null = null;
+
+  function startMatrix() {
+    if (!matrixContainer || !matrixCanvas) return;
+    matrixContainer.style.display = 'flex';
+    const ctx = matrixCanvas.getContext('2d');
+    if (!ctx) return;
+
+    matrixCanvas.width = window.innerWidth;
+    matrixCanvas.height = window.innerHeight;
+
+    const chars = '0123456789ABCDEFΣΠλČEZROBOSALESPYTHONAI';
+    const fontSize = 16;
+    const columns = Math.floor(matrixCanvas.width / fontSize);
+    const drops: number[] = [];
+
+    for (let i = 0; i < columns; i++) {
+      drops[i] = 1;
+    }
+
+    function draw() {
+      if (!ctx || !matrixCanvas) return;
+      ctx.fillStyle = 'rgba(12, 14, 21, 0.08)';
+      ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+      ctx.fillStyle = '#00f5d4';
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    if (matrixInterval) clearInterval(matrixInterval);
+    matrixInterval = window.setInterval(draw, 33);
+  }
+
+  function stopMatrix() {
+    if (matrixContainer) matrixContainer.style.display = 'none';
+    if (matrixInterval) clearInterval(matrixInterval);
+  }
+
+  closeMatrixBtn?.addEventListener('click', stopMatrix);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && matrixContainer?.style.display === 'flex') {
+      stopMatrix();
+    }
+  });
+</script>

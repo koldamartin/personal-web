@@ -1,0 +1,540 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=Press+Start+2P&display=swap');
+
+:root {
+  --tui-bg: #0c0e15;
+  --tui-surface: #131722;
+  --tui-surface-elevated: #1a1f2e;
+  --tui-border: #2a3147;
+  --tui-border-bright: #3f4969;
+  
+  /* Vibrant Charm ANSI Palette */
+  --tui-pink: #ff5f87;
+  --tui-pink-dim: rgba(255, 95, 135, 0.15);
+  --tui-cyan: #00f5d4;
+  --tui-cyan-dim: rgba(0, 245, 212, 0.15);
+  --tui-green: #50fa7b;
+  --tui-green-dim: rgba(80, 250, 123, 0.15);
+  --tui-yellow: #ffb86c;
+  --tui-yellow-dim: rgba(255, 184, 108, 0.15);
+  --tui-purple: #bd93f9;
+  --tui-purple-dim: rgba(189, 147, 249, 0.15);
+  --tui-blue: #7aa2f7;
+  --tui-orange: #ff9e64;
+  
+  --tui-text: #f0f3fc;
+  --tui-text-muted: #8b95b5;
+  --tui-text-dim: #5c6480;
+  
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, Menlo, Monaco, monospace;
+  --font-pixel: 'Press Start 2P', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: var(--tui-bg);
+  color: var(--tui-text);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--tui-bg);
+  background-image: 
+    radial-gradient(ellipse at 50% 0%, rgba(255, 95, 135, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(0, 245, 212, 0.04) 0%, transparent 40%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* CRT Scanline Filter Effect (Toggleable) */
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 3px, 6px 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.crt-active .crt-overlay {
+  opacity: 0.85;
+}
+
+/* Typography & Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--tui-text);
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--tui-cyan);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+a:hover {
+  color: var(--tui-pink);
+  text-decoration: underline;
+}
+
+/* Charm TUI Framing Elements */
+.tui-window {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  width: calc(100% - 2rem);
+  background: var(--tui-surface);
+  border: 1px solid var(--tui-border);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Window Titlebar */
+.tui-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #181d2c;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--tui-border);
+  font-size: 0.82rem;
+  user-select: none;
+}
+
+.tui-window-controls {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.tui-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.tui-dot.red { background: #ff5f87; }
+.tui-dot.yellow { background: #ffb86c; }
+.tui-dot.green { background: #50fa7b; }
+
+.tui-title {
+  color: var(--tui-text-muted);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tui-title span.highlight {
+  color: var(--tui-pink);
+}
+
+.tui-title-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Charm / Lip Gloss Box Styling */
+.charm-box {
+  background: var(--tui-surface-elevated);
+  border: 1px solid var(--tui-border);
+  padding: 1.25rem;
+  position: relative;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.charm-box:hover {
+  border-color: var(--tui-border-bright);
+}
+
+.charm-box.pink-glow:hover {
+  border-color: var(--tui-pink);
+  box-shadow: 0 0 16px var(--tui-pink-dim);
+}
+
+.charm-box.cyan-glow:hover {
+  border-color: var(--tui-cyan);
+  box-shadow: 0 0 16px var(--tui-cyan-dim);
+}
+
+.charm-box.green-glow:hover {
+  border-color: var(--tui-green);
+  box-shadow: 0 0 16px var(--tui-green-dim);
+}
+
+.charm-box.yellow-glow:hover {
+  border-color: var(--tui-yellow);
+  box-shadow: 0 0 16px var(--tui-yellow-dim);
+}
+
+/* Charm Badges & Chips */
+.charm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.charm-badge.magenta {
+  background: #ff5f87;
+  color: #0c0e15;
+}
+
+.charm-badge.cyan {
+  background: #00f5d4;
+  color: #0c0e15;
+}
+
+.charm-badge.green {
+  background: #50fa7b;
+  color: #0c0e15;
+}
+
+.charm-badge.yellow {
+  background: #ffb86c;
+  color: #0c0e15;
+}
+
+.charm-badge.purple {
+  background: #bd93f9;
+  color: #0c0e15;
+}
+
+.charm-badge.outline {
+  background: transparent;
+  border-color: currentColor;
+}
+
+.charm-badge.outline-cyan {
+  color: var(--tui-cyan);
+  border-color: var(--tui-cyan);
+  background: var(--tui-cyan-dim);
+}
+
+.charm-badge.outline-pink {
+  color: var(--tui-pink);
+  border-color: var(--tui-pink);
+  background: var(--tui-pink-dim);
+}
+
+.charm-badge.outline-green {
+  color: var(--tui-green);
+  border-color: var(--tui-green);
+  background: var(--tui-green-dim);
+}
+
+/* Tab Navigation */
+.tui-tabs {
+  display: flex;
+  overflow-x: auto;
+  background: #111420;
+  border-bottom: 1px solid var(--tui-border);
+  scrollbar-width: none;
+}
+
+.tui-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tui-tab {
+  padding: 0.65rem 1.15rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--tui-text-muted);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  border-right: 1px solid var(--tui-border);
+  transition: all 0.15s ease;
+  font-family: var(--font-mono);
+}
+
+.tui-tab:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--tui-text);
+}
+
+.tui-tab.active {
+  background: var(--tui-surface);
+  color: var(--tui-pink);
+  border-top: 2px solid var(--tui-pink);
+  font-weight: 700;
+}
+
+.tui-tab .key-shortcut {
+  font-size: 0.7rem;
+  padding: 0.05rem 0.35rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--tui-text-muted);
+  border-radius: 2px;
+}
+
+.tui-tab.active .key-shortcut {
+  background: var(--tui-pink);
+  color: #0c0e15;
+}
+
+/* Tab Panels */
+.tab-content {
+  display: none;
+  padding: 1.75rem;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ASCII Header & Section Titles */
+.ascii-banner {
+  font-size: 0.58rem;
+  line-height: 1.15;
+  color: var(--tui-pink);
+  white-space: pre;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  user-select: none;
+  margin-bottom: 1rem;
+}
+
+.tui-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.15rem;
+  margin-bottom: 1.25rem;
+  color: var(--tui-cyan);
+  border-bottom: 1px dashed var(--tui-border);
+  padding-bottom: 0.5rem;
+}
+
+.tui-section-title::before {
+  content: '▶';
+  color: var(--tui-pink);
+  font-size: 0.85rem;
+}
+
+/* 8-bit Pixel Art Containers */
+.pixel-art-img {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  border: 2px solid var(--tui-border);
+  background: #10131e;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.pixel-art-img:hover {
+  transform: scale(1.02);
+  border-color: var(--tui-cyan);
+}
+
+/* Code & Command Blocks */
+.tui-code {
+  background: #0b0d14;
+  border: 1px solid var(--tui-border);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--tui-green);
+  overflow-x: auto;
+}
+
+/* Charm Status Bar (Bottom Powerline) */
+.tui-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #10131f;
+  border-top: 1px solid var(--tui-border);
+  font-size: 0.75rem;
+  user-select: none;
+  flex-wrap: wrap;
+}
+
+.statusbar-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+}
+
+.statusbar-segment.mode {
+  background: var(--tui-pink);
+  color: #0c0e15;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.statusbar-segment.file {
+  background: #1f2538;
+  color: var(--tui-text);
+  font-weight: 600;
+}
+
+.statusbar-segment.git {
+  color: var(--tui-yellow);
+}
+
+.statusbar-segment.status {
+  color: var(--tui-green);
+}
+
+/* Interactive Terminal CLI */
+.terminal-container {
+  background: #090b10;
+  border: 1px solid var(--tui-border);
+  padding: 1rem;
+  font-family: var(--font-mono);
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-history {
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: 380px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.terminal-line {
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.terminal-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.5rem;
+}
+
+.terminal-prompt {
+  color: var(--tui-pink);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.terminal-input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--tui-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Button & Action controls */
+.tui-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--tui-surface-elevated);
+  border: 1px solid var(--tui-border);
+  color: var(--tui-text);
+  padding: 0.45rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.tui-btn:hover {
+  background: var(--tui-pink);
+  border-color: var(--tui-pink);
+  color: #0c0e15;
+  text-decoration: none;
+}
+
+.tui-btn.cyan:hover {
+  background: var(--tui-cyan);
+  border-color: var(--tui-cyan);
+  color: #0c0e15;
+}
+
+.tui-btn.green:hover {
+  background: var(--tui-green);
+  border-color: var(--tui-green);
+  color: #0c0e15;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0c0e15;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a3147;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tui-pink);
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+  .tui-window {
+    width: 100%;
+    margin: 0;
+    border-left: none;
+    border-right: none;
+  }
+  .tab-content {
+    padding: 1rem;
+  }
+  .ascii-banner {
+    font-size: 0.42rem;
+  }
+}

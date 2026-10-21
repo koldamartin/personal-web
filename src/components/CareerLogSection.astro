@@ -1,0 +1,66 @@
+---
+import { CAREER_HISTORY } from '../data/portfolio';
+---
+
+<div id="tab-career" class="tab-content" role="tabpanel">
+  <div class="tui-section-title">
+    CAREER LOG & EXPERIENCE TIMELINE (GIT LOG --GRAPH)
+  </div>
+  <p style="color: var(--tui-text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; max-width: 850px;">
+    Track record across full-time engineering and independent contracting in Czechia's top energy and AI tech sectors.
+  </p>
+
+  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+    {CAREER_HISTORY.map((item, index) => (
+      <div class={`charm-box ${item.status === 'CURRENT' ? 'green-glow' : ''}`}>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+            <span style="font-family: var(--font-mono); color: var(--tui-yellow); font-size: 0.8rem; font-weight: 700;">
+              * commit {`0x${(index + 1) * 3824}a`}
+            </span>
+            {item.status === 'CURRENT' ? (
+              <span class="charm-badge green">ACTIVE ROLE</span>
+            ) : (
+              <span class="charm-badge outline">COMPLETED</span>
+            )}
+            <h3 style="font-size: 1.15rem; color: var(--tui-text); margin: 0;">
+              {item.title}
+            </h3>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--tui-text-dim); background: #0c0e15; padding: 0.2rem 0.5rem; border: 1px solid var(--tui-border);">
+            {item.period}
+          </div>
+        </div>
+
+        <div style="font-size: 0.9rem; color: var(--tui-cyan); font-weight: 600; margin-bottom: 0.5rem;">
+          {item.company} <span style="color: var(--tui-text-dim); font-size: 0.8rem; font-weight: 400;">({item.type}{item.location ? ` · ${item.location}` : ''})</span>
+        </div>
+
+        <p style="color: var(--tui-text-muted); font-size: 0.86rem; margin-bottom: 0.75rem; line-height: 1.5;">
+          {item.description}
+        </p>
+
+        <!-- Responsibilities List -->
+        <div style="background: #0f121d; border: 1px solid var(--tui-border); padding: 0.75rem 1rem; margin-bottom: 0.75rem;">
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.82rem; color: var(--tui-text);">
+            {item.details.map((detail) => (
+              <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+                <span style="color: var(--tui-pink); flex-shrink: 0;">›</span>
+                <span>{detail}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Tech tags -->
+        <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+          {item.tech.map((t) => (
+            <span style="font-size: 0.7rem; background: #181b26; color: var(--tui-text-dim); padding: 0.1rem 0.4rem; border: 1px solid var(--tui-border);">
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
