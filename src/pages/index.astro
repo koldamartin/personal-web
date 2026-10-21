@@ -1,16 +1,34 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import IdeEditorTabs from '../components/IdeEditorTabs.astro';
+import IdeChaptersSidebar from '../components/IdeChaptersSidebar.astro';
+import IdeBottomTerminal from '../components/IdeBottomTerminal.astro';
 import OverviewSection from '../components/OverviewSection.astro';
 import AiProjectsSection from '../components/AiProjectsSection.astro';
 import WebProjectsSection from '../components/WebProjectsSection.astro';
 import CareerLogSection from '../components/CareerLogSection.astro';
-import InteractiveTerminal from '../components/InteractiveTerminal.astro';
 ---
 
 <Layout>
-  <OverviewSection />
-  <AiProjectsSection />
-  <WebProjectsSection />
-  <CareerLogSection />
-  <InteractiveTerminal />
+  <div class="ide-container">
+    <!-- IDE Main Workspace: Editor on Left/Center, Chapters on Right -->
+    <div class="ide-workspace">
+      <div class="ide-main-column">
+        <IdeEditorTabs />
+        
+        <div class="ide-viewport">
+          <OverviewSection />
+          <AiProjectsSection />
+          <WebProjectsSection />
+          <CareerLogSection />
+        </div>
+      </div>
+
+      <!-- Right Side Chapters Panel -->
+      <IdeChaptersSidebar />
+    </div>
+
+    <!-- Integrated Terminal on by default on bottom -->
+    <IdeBottomTerminal />
+  </div>
 </Layout>

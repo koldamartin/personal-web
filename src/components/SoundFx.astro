@@ -123,44 +123,59 @@
     toggleCRT();
   });
 
-  // Tab Switching Logic
-  const tabs = document.querySelectorAll('.tui-tab');
-  const tabContents = document.querySelectorAll('.tab-content');
+  // Chapter & Editor Tab Sync Logic
+  const CHAPTER_FILES: Record<string, string> = {
+    overview: '01_profile.py',
+    ai: '02_ai_models.py',
+    web: '03_websites.tsx',
+    career: '04_career.log'
+  };
 
-  function activateTab(tabId: string) {
-    let found = false;
-    tabs.forEach((t) => {
-      const match = (t as HTMLElement).dataset.tab === tabId;
-      t.classList.toggle('active', match);
-      t.setAttribute('aria-selected', match ? 'true' : 'false');
-      if (match) found = true;
-    });
-
-    tabContents.forEach((c) => {
-      const match = c.id === `tab-${tabId}`;
-      c.classList.toggle('active', match);
-    });
-
-    if (found) {
-      audio.playTabSound();
+  declare global {
+    interface Window {
+      ideActivateChapter?: (chapterId: string) => void;
     }
   }
 
-  tabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      const id = (tab as HTMLElement).dataset.tab;
-      if (id) activateTab(id);
+  window.ideActivateChapter = function(chapterId: string) {
+    // 1. Update Editor Tabs
+    document.querySelectorAll('.ide-editor-tab').forEach((tab) => {
+      const match = (tab as HTMLElement).dataset.tab === chapterId;
+      tab.classList.toggle('active', match);
+      tab.setAttribute('aria-selected', match ? 'true' : 'false');
     });
-  });
+
+    // 2. Update Right Sidebar Chapters
+    document.querySelectorAll('.ide-chapter-item').forEach((item) => {
+      const match = (item as HTMLElement).dataset.target === chapterId;
+      item.classList.toggle('active', match);
+    });
+
+    // 3. Update Main Content Sections
+    document.querySelectorAll('.tab-content').forEach((content) => {
+      const match = content.id === `tab-${chapterId}`;
+      content.classList.toggle('active', match);
+    });
+
+    // 4. Update Status Bar File
+    const statusFile = document.getElementById('statusbar-active-file');
+    if (statusFile && CHAPTER_FILES[chapterId]) {
+      statusFile.textContent = `src/${CHAPTER_FILES[chapterId]}`;
+    }
+
+    // 5. Sound feedback
+    audio.playTabSound();
+  };
 
   // Switch tab triggers inside page content
   document.querySelectorAll('.switch-tab-trigger').forEach((trigger) => {
     trigger.addEventListener('click', (e) => {
       e.preventDefault();
       const target = (trigger as HTMLElement).dataset.target;
-      if (target) {
-        activateTab(target);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (target && window.ideActivateChapter) {
+        window.ideActivateChapter(target);
+        const viewport = document.querySelector('.ide-viewport');
+        if (viewport) viewport.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
   });
@@ -173,14 +188,15 @@
     }
 
     const key = e.key.toUpperCase();
-    if (key === '1') activateTab('overview');
-    else if (key === '2') activateTab('ai');
-    else if (key === '3') activateTab('web');
-    else if (key === '4') activateTab('career');
-    else if (key === '5') {
-      activateTab('cli');
+    if (key === '1' && window.ideActivateChapter) window.ideActivateChapter('overview');
+    else if (key === '2' && window.ideActivateChapter) window.ideActivateChapter('ai');
+    else if (key === '3' && window.ideActivateChapter) window.ideActivateChapter('web');
+    else if (key === '4' && window.ideActivateChapter) window.ideActivateChapter('career');
+    else if (key === '5' || key === '`') {
+      const dock = document.getElementById('ide-terminal-dock');
+      if (dock) dock.classList.remove('collapsed');
       setTimeout(() => {
-        document.getElementById('terminal-input')?.focus();
+        document.getElementById('ide-term-input')?.focus();
       }, 50);
     } else if (key === 'T') {
       toggleCRT();

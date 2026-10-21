@@ -1,0 +1,291 @@
+---
+import { PERSONAL_INFO } from '../data/portfolio';
+---
+
+<div id="ide-terminal-dock" class="ide-terminal-dock" aria-label="Integrated Terminal Dock">
+  <!-- Terminal Header / Tabs -->
+  <div class="ide-terminal-header">
+    <div class="ide-dock-tabs">
+      <button class="ide-dock-tab active" data-dock="terminal">
+        <span style="color: var(--tui-green); font-size: 0.65rem;">●</span>
+        <span>TERMINAL</span>
+      </button>
+      <button class="ide-dock-tab" data-dock="output">
+        <span>OUTPUT</span>
+      </button>
+      <button class="ide-dock-tab" data-dock="problems">
+        <span>PROBLEMS</span>
+        <span style="background: rgba(80, 250, 123, 0.15); color: var(--tui-green); padding: 0 0.3rem; border-radius: 2px; font-size: 0.65rem;">0</span>
+      </button>
+      <button class="ide-dock-tab" data-dock="ai-logs">
+        <span>AI_AGENT.LOG</span>
+      </button>
+    </div>
+
+    <!-- Dock Controls -->
+    <div class="ide-dock-controls">
+      <span style="font-size: 0.7rem; color: var(--tui-text-dim); margin-right: 0.5rem;">bash (zsh/fish)</span>
+      <button id="clear-term-btn" class="ide-dock-btn" title="Clear Terminal (Ctrl+L)">🗑 Clear</button>
+      <button id="toggle-term-size-btn" class="ide-dock-btn" title="Toggle Height">⛶ Expand</button>
+      <button id="toggle-term-collapse-btn" class="ide-dock-btn" title="Collapse / Expand Terminal">⌄</button>
+    </div>
+  </div>
+
+  <!-- Terminal Body -->
+  <div id="ide-terminal-content" style="padding: 0.75rem 1rem; display: flex; flex-direction: column; background: #090b10;">
+    <!-- Command Chips -->
+    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; align-items: center;">
+      <span style="font-size: 0.7rem; color: var(--tui-text-dim);">COMMAND SHORTCUTS:</span>
+      <button class="tui-btn cli-chip" data-cmd="help" style="padding: 0.15rem 0.45rem; font-size: 0.72rem;">help</button>
+      <button class="tui-btn cli-chip cyan" data-cmd="ai" style="padding: 0.15rem 0.45rem; font-size: 0.72rem;">ai</button>
+      <button class="tui-btn cli-chip green" data-cmd="websites" style="padding: 0.15rem 0.45rem; font-size: 0.72rem;">websites</button>
+      <button class="tui-btn cli-chip" data-cmd="skills" style="padding: 0.15rem 0.45rem; font-size: 0.72rem;">skills</button>
+      <button class="tui-btn cli-chip" data-cmd="cat resume" style="padding: 0.15rem 0.45rem; font-size: 0.72rem;">cat resume</button>
+      <button class="tui-btn cli-chip" data-cmd="contact" style="padding: 0.15rem 0.45rem; font-size: 0.72rem;">contact</button>
+      <button class="tui-btn cli-chip" data-cmd="matrix" style="padding: 0.15rem 0.45rem; font-size: 0.72rem;">matrix</button>
+    </div>
+
+    <!-- History output -->
+    <div id="ide-term-history" style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.45; margin-bottom: 0.5rem;">
+      <div style="color: var(--tui-pink); font-weight: 700;">
+        ⚡ Martin Kolda IDE Integrated Terminal [ČEZ a.s. AI & Web Dev]
+      </div>
+      <div style="color: var(--tui-text-dim);">
+        Terminal active at bottom by default. Type <span style="color: var(--tui-cyan); font-weight: 700;">help</span>, or click any command shortcut above.
+      </div>
+    </div>
+
+    <!-- Input row -->
+    <form id="ide-term-form" class="terminal-input-row" autocomplete="off" style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 0.35rem;">
+      <label for="ide-term-input" class="terminal-prompt" style="font-size: 0.82rem;">martin@ide:~$ </label>
+      <input 
+        id="ide-term-input" 
+        type="text" 
+        class="terminal-input" 
+        placeholder="Type a command (e.g. 'ai', 'websites', 'cat resume')..." 
+        spellcheck="false"
+        autocomplete="off"
+        style="font-size: 0.82rem;"
+      />
+      <button type="submit" class="tui-btn" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;">EXEC</button>
+    </form>
+  </div>
+
+  <!-- Matrix Easter Egg Canvas (Hidden by default) -->
+  <div id="matrix-container" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 10000; flex-direction: column; align-items: center; justify-content: center;">
+    <canvas id="matrix-canvas" style="position: absolute; inset: 0; width: 100%; height: 100%;"></canvas>
+    <div style="position: relative; z-index: 2; background: #0c0e15; border: 2px solid var(--tui-green); padding: 1.5rem 2rem; text-align: center; max-width: 450px;">
+      <h3 style="color: var(--tui-green); font-family: var(--font-pixel); font-size: 0.9rem; margin-bottom: 1rem;">
+        [ MATRIX SIMULATION ]
+      </h3>
+      <p style="color: var(--tui-text); font-size: 0.85rem; margin-bottom: 1.25rem;">
+        Neural data flow active. ČEZ a.s. & Robosales pipelines interconnected.
+      </p>
+      <button id="close-matrix-btn" class="tui-btn green" style="font-size: 0.8rem;">
+        <span>DISENGAGE (ESC)</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Integrated Terminal Logic
+  const form = document.getElementById('ide-term-form') as HTMLFormElement | null;
+  const input = document.getElementById('ide-term-input') as HTMLInputElement | null;
+  const history = document.getElementById('ide-term-history');
+  const chips = document.querySelectorAll('.cli-chip');
+  const dock = document.getElementById('ide-terminal-dock');
+  const collapseBtn = document.getElementById('toggle-term-collapse-btn');
+  const sizeBtn = document.getElementById('toggle-term-size-btn');
+  const clearBtn = document.getElementById('clear-term-btn');
+
+  const COMMANDS: Record<string, string> = {
+    help: `
+<span style="color: var(--tui-yellow); font-weight: 700;">IDE TERMINAL COMMANDS:</span>
+  <span style="color: var(--tui-cyan);">ai</span>         - ČEZ a.s. enterprise AI & Robosales shopping assistant
+  <span style="color: var(--tui-cyan);">websites</span>   - Client websites (b2ts.cz, vpt-lipno.cz, doteku.cz)
+  <span style="color: var(--tui-cyan);">skills</span>     - Technical stack & proficiency metrics
+  <span style="color: var(--tui-cyan);">whoami</span>     - Bio & background
+  <span style="color: var(--tui-cyan);">cat resume</span> - Resume summary
+  <span style="color: var(--tui-cyan);">contact</span>    - mkko@seznam.cz
+  <span style="color: var(--tui-cyan);">matrix</span>     - Launch Matrix rain visualizer
+  <span style="color: var(--tui-cyan);">sound</span>      - Toggle 8-bit sound effects
+  <span style="color: var(--tui-cyan);">crt</span>        - Toggle CRT scanline shader
+  <span style="color: var(--tui-cyan);">clear</span>      - Clear terminal screen
+`,
+    whoami: `
+<span style="color: var(--tui-pink); font-weight: 700;">Martin Kolda</span> - Python AI & Full-Stack Web Developer.
+Building enterprise AI solutions for ČEZ a.s. and shipping ultra-fast websites in Astro & Next.js.
+`,
+    ai: `
+<span style="color: var(--tui-green); font-weight: 700;">[ AI & MACHINE LEARNING ]</span>
+1. <span style="color: var(--tui-yellow);">ČEZ a.s.</span>: Enterprise AI Solutions (2025–Present)
+2. <span style="color: var(--tui-yellow);">robosales.ai</span>: AI Shopping Assistant (Contractor)
+3. <span style="color: var(--tui-yellow);">AddAI.Life</span>: LangChain RAG & Data Platform (2024–2025)
+`,
+    websites: `
+<span style="color: var(--tui-cyan); font-weight: 700;">[ PRODUCTION CLIENT WEBSITES ]</span>
+1. <a href="https://b2ts.cz" target="_blank" style="color: var(--tui-cyan); font-weight: 700;">b2ts.cz</a> - Business & Tech Solutions
+2. <a href="https://vpt-lipno.cz" target="_blank" style="color: var(--tui-yellow); font-weight: 700;">vpt-lipno.cz</a> - Lake Lipno accommodation portal
+3. <a href="https://doteku.cz" target="_blank" style="color: var(--tui-pink); font-weight: 700;">doteku.cz</a> - Wellness & massage sanctuary
+`,
+    skills: `
+<span style="color: var(--tui-purple); font-weight: 700;">[ TECH STACK ]</span>
+* AI / LLMs:  LangChain, LlamaIndex, pgvector, VectorDBs, Prompt Engineering, RAG
+* Python:     Python 3.12+, FastAPI, Celery, PyTest, AsyncIO, SQLAlchemy
+* Frontend:   Astro, TypeScript, Next.js, Netlify Forms, Responsive CSS
+* Data/Cloud: PostgreSQL, AWS S3, Docker, Redis, REST APIs
+`,
+    "cat resume": `
+<span style="color: var(--tui-yellow); font-weight: 700;">MARTIN KOLDA - CURRICULUM VITAE</span>
+* AI Developer (Živnostník) | 02/2025 – Present | Client: ČEZ a.s.
+* Web Developer (Na volné noze) | 12/2024 – Present | Sites: b2ts.cz, vpt-lipno.cz, doteku.cz
+* AI/Python Developer (AddAI.Life) | 03/2024 – 02/2025 | LangChain RAG & S3/Postgres
+* Contractor | robosales.ai | AI Shopping Assistant
+`,
+    contact: `
+<span style="color: var(--tui-green); font-weight: 700;">CONTACT MARTIN:</span>
+Email: <a href="mailto:mkko@seznam.cz" style="color: var(--tui-yellow); font-weight: 700;">mkko@seznam.cz</a>
+`
+  };
+
+  function addLine(content: string) {
+    if (!history) return;
+    const div = document.createElement('div');
+    div.className = 'terminal-line';
+    div.innerHTML = content;
+    history.appendChild(div);
+    history.scrollTop = history.scrollHeight;
+  }
+
+  function handleCommand(rawCmd: string) {
+    const cmd = rawCmd.trim().toLowerCase();
+    addLine(`<span style="color: var(--tui-pink); font-weight: 700;">martin@ide:~$</span> <span style="color: var(--tui-text);">${rawCmd}</span>`);
+    
+    if (!cmd) return;
+
+    if (cmd === 'clear') {
+      if (history) history.innerHTML = '';
+      return;
+    }
+
+    if (cmd === 'sound') {
+      document.getElementById('toggle-sound-btn')?.click();
+      return;
+    }
+
+    if (cmd === 'crt') {
+      document.getElementById('toggle-crt-btn')?.click();
+      return;
+    }
+
+    if (cmd === 'matrix') {
+      startMatrix();
+      addLine('<span style="color: var(--tui-green);">Matrix simulation initiated. Press ESC to exit.</span>');
+      return;
+    }
+
+    if (COMMANDS[cmd]) {
+      addLine(COMMANDS[cmd]);
+    } else {
+      addLine(`<span style="color: #ff5f87;">Command not recognized: '${cmd}'. Type <span style="color: var(--tui-cyan); font-weight: 700;">help</span> for available commands.</span>`);
+    }
+  }
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!input) return;
+    const val = input.value;
+    input.value = '';
+    handleCommand(val);
+  });
+
+  chips.forEach((c) => {
+    c.addEventListener('click', () => {
+      const cmd = (c as HTMLElement).dataset.cmd;
+      if (cmd) handleCommand(cmd);
+    });
+  });
+
+  clearBtn?.addEventListener('click', () => {
+    if (history) history.innerHTML = '';
+  });
+
+  // Collapse / Expand Terminal Dock
+  collapseBtn?.addEventListener('click', () => {
+    dock?.classList.toggle('collapsed');
+    if (collapseBtn) {
+      collapseBtn.textContent = dock?.classList.contains('collapsed') ? '⌃' : '⌄';
+    }
+  });
+
+  // Toggle Height
+  let expanded = false;
+  sizeBtn?.addEventListener('click', () => {
+    if (!history) return;
+    expanded = !expanded;
+    history.style.maxHeight = expanded ? '360px' : '180px';
+    if (sizeBtn) {
+      sizeBtn.textContent = expanded ? '⛶ Normal' : '⛶ Expand';
+    }
+  });
+
+  // Matrix Simulation
+  const matrixContainer = document.getElementById('matrix-container');
+  const matrixCanvas = document.getElementById('matrix-canvas') as HTMLCanvasElement | null;
+  const closeMatrixBtn = document.getElementById('close-matrix-btn');
+  let matrixInterval: number | null = null;
+
+  function startMatrix() {
+    if (!matrixContainer || !matrixCanvas) return;
+    matrixContainer.style.display = 'flex';
+    const ctx = matrixCanvas.getContext('2d');
+    if (!ctx) return;
+
+    matrixCanvas.width = window.innerWidth;
+    matrixCanvas.height = window.innerHeight;
+
+    const chars = '0123456789ABCDEFČEZROBOSALESPYTHONAI';
+    const fontSize = 16;
+    const columns = Math.floor(matrixCanvas.width / fontSize);
+    const drops: number[] = [];
+
+    for (let i = 0; i < columns; i++) {
+      drops[i] = 1;
+    }
+
+    function draw() {
+      if (!ctx || !matrixCanvas) return;
+      ctx.fillStyle = 'rgba(12, 14, 21, 0.08)';
+      ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+      ctx.fillStyle = '#00f5d4';
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    if (matrixInterval) clearInterval(matrixInterval);
+    matrixInterval = window.setInterval(draw, 33);
+  }
+
+  function stopMatrix() {
+    if (matrixContainer) matrixContainer.style.display = 'none';
+    if (matrixInterval) clearInterval(matrixInterval);
+  }
+
+  closeMatrixBtn?.addEventListener('click', stopMatrix);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && matrixContainer?.style.display === 'flex') {
+      stopMatrix();
+    }
+  });
+</script>

@@ -1,0 +1,35 @@
+---
+const editorTabs = [
+  { id: "overview", file: "01_profile.py", icon: "🐍" },
+  { id: "ai", file: "02_ai_models.py", icon: "⚡" },
+  { id: "web", file: "03_websites.tsx", icon: "🌐" },
+  { id: "career", file: "04_career.log", icon: "📜" }
+];
+---
+
+<div class="ide-editor-tabs" role="tablist">
+  {editorTabs.map((tab, idx) => (
+    <div 
+      class={`ide-editor-tab ${idx === 0 ? 'active' : ''}`}
+      data-tab={tab.id}
+      role="tab"
+      aria-selected={idx === 0 ? "true" : "false"}
+    >
+      <span class="tab-icon">{tab.icon}</span>
+      <span>{tab.file}</span>
+      <span class="tab-close">✕</span>
+    </div>
+  ))}
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.ide-editor-tab');
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const id = (tab as HTMLElement).dataset.tab;
+      if (id && window.ideActivateChapter) {
+        window.ideActivateChapter(id);
+      }
+    });
+  });
+</script>

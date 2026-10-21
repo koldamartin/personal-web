@@ -1,7 +1,6 @@
 ---
 import '../styles/tui.css';
 import HeaderTui from '../components/HeaderTui.astro';
-import NavigationTabs from '../components/NavigationTabs.astro';
 import FooterStatusBar from '../components/FooterStatusBar.astro';
 import SoundFx from '../components/SoundFx.astro';
 import { PERSONAL_INFO } from '../data/portfolio';
@@ -12,7 +11,7 @@ interface Props {
 }
 
 const { 
-  title = "Martin Kolda | Python AI & Web Developer [TUI / Charm]",
+  title = "Martin Kolda | Python AI & Web Developer [IDE Studio]",
   description = "Portfolio of Martin Kolda – Python AI Engineer building AI solutions for ČEZ a.s., creator of robosales.ai assistant, and developer of high-speed Astro websites (b2ts.cz, vpt-lipno.cz, doteku.cz)."
 } = Astro.props;
 ---
@@ -43,10 +42,9 @@ const {
     <!-- Toggleable CRT Scanlines Overlay -->
     <div class="crt-overlay" aria-hidden="true"></div>
 
-    <!-- Main Charm TUI Window Container -->
+    <!-- Main Charm IDE Window Container -->
     <main class="tui-window">
       <HeaderTui />
-      <NavigationTabs />
       
       <div class="tui-body">
         <slot />
